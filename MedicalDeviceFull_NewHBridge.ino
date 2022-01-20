@@ -1,3 +1,7 @@
+#include <Adafruit_INA219.h>
+
+Adafruit_INA219 currentSensor;
+
 enum states {
   STANDBY,
   CUTTING,
@@ -7,7 +11,7 @@ enum states {
 
 enum states deviceState;
 
-
+const float stallCurrent = 1; // this is just placeholder until value is tested
 const int sw1 = A1;
 const int sw2 = A2;
 const int button = A0;
@@ -44,11 +48,24 @@ void setup() {
   analogWrite(xIN2, high);
   digitalWrite(motorEnable, LOW);
   
+  uint32_t current;
+  Serial.begin(115200)
+  Serial.println("Measuring the current across the motor...");
+  Serial.begin();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
+  //float loadVoltage = 0;
+  float current = 0; //value will be read in mA
+  
+  //this will continuously read current
+  current = currentSensor.getCurrent_mA();
+  Serial.print("The current is "); Serial.print(current); Serial.println(" mA");
+   Serial.println("");
+  
+  
   sw1Val = digitalRead(sw1);
   sw2Val = digitalRead(sw2);
   buttonVal = digitalRead(button);
@@ -63,7 +80,7 @@ void loop() {
   }
             
   else if(deviceState == CUTTING){
-    if(sw1Val == LOW){
+    if(current == stallCurrent){
       analogWrite(xIN1, high);
       analogWrite(xIN2, high);
       digitalWrite(motorEnable, LOW);
@@ -81,7 +98,7 @@ void loop() {
   }
             
   else if(deviceState == EXITING){
-    if(sw2Val == LOW){
+    if(current == stallCurrent){
       analogWrite(xIN1, high);
       analogWrite(xIN2, high);
       digitalWrite(motorEnable, LOW);
