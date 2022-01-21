@@ -16,4 +16,7 @@ We are working on figuring out the size for the PCB to indicate if we need to wo
 <img width="630" alt="Screen Shot 2022-01-21 at 12 58 00 PM" src="https://user-images.githubusercontent.com/78036141/150576793-8084bf40-c3be-4d3c-8361-bb706671d60f.png">
 
 ## Vertical Features
+When it is in the testing phase and if everything works as intended, then the new features to be implemented will have been the current sensors and the USB. The USB will make it much easier for the user to reprogram the device if there needs to be updates rather than taking apart the different housing and attaching to an Arduino Uno which is how it was done previously. The current sensors will eliminate the hall effect sensors and magnet that was beneath the lead screw, thus optimizing the device. The vertical feature that is still being implemented is a fairly new idea to display values of current, velocity and force through serial communication to a PC.
+
+The code for the microcontorller itself works through the same state diagram of standby, cutting, removal, and exit. The change however is that it no longer is based on the hall effect sensors and is instead working with the INA219 to sense the current of the motor. Once the current reaches a spike, which is the stall current of the motor, the microchip will turn the motor off. This stall indicates that the syringe has reached its full stroke for that motor direction and then when ready and the button is pressed, the motor will start up in the opposite direction. 
 
