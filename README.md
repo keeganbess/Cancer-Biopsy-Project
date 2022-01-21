@@ -13,6 +13,10 @@ Before the PCB is purchased, our team wanted to ensure that the schematic design
 
 We are working on figuring out the size for the PCB to indicate if we need to work on remaking the design of the exterior housing which is 3D printed. However, our current prediction is that we shouldn’t have to alter the housing and we can reuse the same design as is present in the current prototype. The only difference is there will now be a USB port that needs to be accessed from outside of the device which will be worked on when we have the final PCB inside of the device. Below is what the exterior housing looks like at this current stage. 
 
+## Repository link
+https://github.com/keeganbess/Cancer-Biopsy-Project.git
+
+
 <img width="630" alt="Screen Shot 2022-01-21 at 12 58 00 PM" src="https://user-images.githubusercontent.com/78036141/150576793-8084bf40-c3be-4d3c-8361-bb706671d60f.png">
 
 ## Vertical Features
