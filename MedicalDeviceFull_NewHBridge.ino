@@ -11,7 +11,7 @@ enum states {
 
 enum states deviceState;
 
-const float stallCurrent = 1; // this is just placeholder until value is tested
+const float stallCurrent = 750; // this is just placeholder until value is tested
 const int sw1 = A1;
 const int sw2 = A2;
 const int button = A0;
