@@ -1,6 +1,7 @@
+#include <Wire.h>
 #include <Adafruit_INA219.h>
 
-Adafruit_INA219 currentSensor;
+Adafruit_INA219 ina219;
 
 enum states {
   STANDBY,
@@ -11,100 +12,84 @@ enum states {
 
 enum states deviceState;
 
-const float stallCurrent = 1; // this is just placeholder until value is tested
-const int sw1 = A1;
-const int sw2 = A2;
-const int button = A0;
+const float stallCurrent = 61;
 
-const int xIN1 = 10;
-const int xIN2 = 9;
-const int motorEnable = 11;
+const int buttonPin = 15;
 
-const int pwm = 0;
-
-const int high = 255;
-
-int sw1Val;
-int sw2Val;
-int buttonVal;
-
-int led = 9;           // the PWM pin the LED is attached to
-
+const int EN = 7; // analog
+const int PH = 6; //digital
+int button = 0;
 void setup() {
+  // put your setup code here, to run once:
+  pinMode(button, INPUT);
+  
+  pinMode(EN, OUTPUT);
+  pinMode(PH, OUTPUT);
 
-  pinMode(sw1, INPUT_PULLUP);
-  pinMode(sw2, INPUT_PULLUP);
-  pinMode(button, INPUT_PULLUP);
-  
-  pinMode(led, OUTPUT);
-  
-  pinMode(xIN1, OUTPUT);
-  pinMode(xIN2, OUTPUT);
-  pinMode(motorEnable, OUTPUT);
-  
   deviceState = STANDBY;
-
-  analogWrite(xIN1, high);
-  analogWrite(xIN2, high);
-  digitalWrite(motorEnable, LOW);
-  
-  uint32_t current;
-  Serial.begin(115200)
-  Serial.println("Measuring the current across the motor...");
-  Serial.begin();
+  analogWrite(EN, 0); // this will brake, regardless of what ph is 
+  digitalWrite(PH, HIGH);
+  Serial.begin(115200);
+  while (!Serial) {
+      delay(1);
+  }
+  ina219.begin();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
 
-  //float loadVoltage = 0;
-  float current = 0; //value will be read in mA
-  
-  //this will continuously read current
-  current = currentSensor.getCurrent_mA();
-  Serial.print("The current is "); Serial.print(current); Serial.println(" mA");
-   Serial.println("");
-  
-  
-  sw1Val = digitalRead(sw1);
-  sw2Val = digitalRead(sw2);
-  buttonVal = digitalRead(button);
-  
-  if(deviceState == STANDBY){    
-    if(buttonVal == LOW){
+
+void loop() {
+float shuntvoltage = 0;
+float busvoltage = 0;
+float current_mA = 0;
+float loadvoltage = 0;
+float power_mW = 0;
+
+shuntvoltage = ina219.getShuntVoltage_mV();
+busvoltage = ina219.getBusVoltage_V();
+current_mA = ina219.getCurrent_mA();
+power_mW = ina219.getPower_mW();
+loadvoltage = busvoltage + (shuntvoltage / 1000);
+
+Serial.print("Bus Voltage: "); Serial.print(busvoltage); Serial.println(" V");
+Serial.print("Shunt Voltage: "); Serial.print(shuntvoltage); Serial.println(" mV");
+Serial.print("Load Voltage: "); Serial.print(loadvoltage); Serial.println(" V");
+Serial.print("Current: "); Serial.print(current_mA); Serial.println(" mA");
+Serial.print("Power: "); Serial.print(power_mW); Serial.println(" mW");
+Serial.println("");   
+  // put your main code here, to run repeatedly:
+   button = digitalRead(buttonPin);
+   if(deviceState == STANDBY){    
+    if(button == HIGH){
       deviceState = CUTTING;
-      analogWrite(xIN1, pwm);
-      analogWrite(xIN2, high);
-      digitalWrite(motorEnable, HIGH);
+      analogWrite(EN, 255);
+      digitalWrite(PH, LOW);
     }
   }
-            
   else if(deviceState == CUTTING){
-    if(current == stallCurrent){
-      analogWrite(xIN1, high);
-      analogWrite(xIN2, high);
-      digitalWrite(motorEnable, LOW);
+    if(current_mA >= stallCurrent){
+      analogWrite(EN, 0);
+      digitalWrite(PH, HIGH);
       deviceState = REMOVAL;
     }
   }
 
   else if(deviceState == REMOVAL){
-    if(buttonVal == LOW){
+    if(button == HIGH){
       deviceState = EXITING;
-      analogWrite(xIN1, high);
-      analogWrite(xIN2, pwm);
-      digitalWrite(motorEnable, HIGH);
+      analogWrite(EN, 255);
+      digitalWrite(PH, LOW);
     }
   }
             
   else if(deviceState == EXITING){
-    if(current == stallCurrent){
-      analogWrite(xIN1, high);
-      analogWrite(xIN2, high);
-      digitalWrite(motorEnable, LOW);
+    if(current_mA >= stallCurrent){
+      analogWrite(EN, 0);
+      digitalWrite(PH, LOW);
       deviceState = STANDBY;
     }
   }
-
-  delay(10);
+   Serial.print(button);         
+  
+   delay(500);
 }
