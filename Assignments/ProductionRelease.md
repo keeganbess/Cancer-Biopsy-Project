@@ -12,7 +12,8 @@ The design of the housing that the user mainly interacts with is the switch and 
 
 ## Build Quality
 With the prior prototype we have been extracting sample tissue from the gelatin phantom. As we are aiming to work with prostate tissue, we have been altering the stiffness of the gelatin phantom used prior when the focus was breast cancer. The motor is now a 6V motor with the intention to increase the linear speed of our extractions to 20 mm/s so that we could extract the stiffer tissue sample. The syringe that we have been using doesn’t seem to be extracting perfect samples due to the decreased friction of the stopper in the syringe so the vacuum created isn’t ideal. When we tested with a smaller barrel syringe, the device extracted samples around 15-20mm in size. 
-<img width="433" alt="Screen Shot 2022-04-06 at 6 45 27 PM" src="https://user-images.githubusercontent.com/78036141/162084844-3065ce04-8211-4a3a-929c-51a99c5fc621.png">
+
+<img width="428" alt="Screen Shot 2022-04-06 at 6 46 41 PM" src="https://user-images.githubusercontent.com/78036141/162085020-66d0f41b-0257-4ad3-87de-0804a045d259.png">
 
 <img width="427" alt="Screen Shot 2022-04-06 at 6 45 39 PM" src="https://user-images.githubusercontent.com/78036141/162084864-b3faa03c-53b3-4139-98fe-f98bac0776d3.png">
 
